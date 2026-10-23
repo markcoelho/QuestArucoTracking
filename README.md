@@ -19,11 +19,12 @@ Everything else (Meta XR SDK, OpenCV) is already included in the project.
 
 ## 2. Build the APK
 
-1. Open **Unity Hub → Add → Add project from disk** and select this `QuestArucoTracking` folder.
-2. Open the project. The first time takes a few minutes while Unity imports everything.
-3. Go to **File → Build Profiles**, select **Android**, and click **Switch Platform** (skip this if Android is already active).
-4. In the top menu, click **Build → Build Quest ARM64 APK**.
-5. When it finishes, the app is at:
+1. Put the project in a folder with a **short path**, for example `C:\Projects\QuestArucoTracking`. Very long paths make the Android build fail on Windows.
+2. Open **Unity Hub → Add → Add project from disk** and select this `QuestArucoTracking` folder.
+3. Open the project. The first time takes a few minutes while Unity imports everything.
+4. Go to **File → Build Profiles**, select **Android**, and click **Switch Platform** (skip this if Android is already active).
+5. In the top menu, click **Build → Build Quest ARM64 APK**.
+6. When it finishes, the app is at:
 
    ```
    QuestArucoTracking/Builds/ArucoTracker.apk
@@ -73,4 +74,5 @@ Build again and drag the new APK into SideQuest. It replaces the old version.
 | App not in Library | Set the Library filter to **Unknown Sources**. |
 | No markers detected | Make sure you allowed camera access (Settings → Apps → Permissions), the markers are from the 4x4 dictionary, and the room is well lit. |
 | Marker position/size is off | Set **Marker Length** on the `ArUcoMarkerTracking` component to your printed marker's side length in meters (2 cm = `0.02`), then rebuild. |
+| Build fails with "Cannot run program ... .bat" | The folder path is too long. Move the project to a short path like `C:\Projects\QuestArucoTracking`. |
 | Build menu missing | Wait for Unity to finish compiling scripts, or check the Console for errors. |
