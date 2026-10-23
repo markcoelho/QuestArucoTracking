@@ -66,6 +66,32 @@ Everything else (Meta XR SDK, OpenCV) is already included in the project.
 
 Build again and drag the new APK into SideQuest. It replaces the old version.
 
+## How tracking works
+
+1. Each new camera image is copied from the GPU into a reusable buffer (`AsyncGPUReadback`).
+2. A native C++ plugin (`libarucobridge.so`, built on OpenCV) reads that buffer directly and detects markers on its own thread. Once markers are found, it only searches the area around them, with a full scan every few frames to find new ones.
+3. Poses are placed in the world using the headset pose at the exact moment the image was taken.
+4. Every frame, each marker's pose is predicted forward to the moment the frame is shown. This hides the camera's built-in delay, so moving markers don't trail behind.
+
+## Tuning
+
+Select `ArUcoTrackingAppCoordinator` in the scene and change these on the `ArUcoMarkerTracking` component:
+
+| Setting | What it does |
+| --- | --- |
+| **Full Scan Interval** | How often the whole image is searched for new markers. Lower = new markers appear sooner, higher = faster tracking. |
+| **Predict Motion** | Predicts where moving markers are right now. Turn off to see the raw (delayed) tracking. |
+| **Prediction Strength** | How much of the camera delay to predict away (default 0.5). Higher = less drag on smooth moves, lower = calmer on fast shakes and sudden stops. |
+| **Max Prediction Distance / Angle** | The furthest a marker may be moved or rotated ahead of its last detection. Lower them if fast moves still overshoot. |
+| **Velocity Responsiveness** | How quickly the speed estimate reacts. Lower = calmer during jerky motion, higher = prediction starts sooner. |
+| **Max Prediction** | How far ahead (seconds) it may predict at most. |
+| **Position Noise / Rotation Noise** | Movement smaller than this counts as jitter and is smoothed out. Raise them if still markers shake, lower them if small movements feel sluggish. |
+| **Still Responsiveness** | How steady a still marker is (lower = steadier). |
+
+## Changing the native plugin
+
+The built plugin is already in `Assets/Plugins/Android/arm64-v8a`. Rebuilding is only needed if you change `NativePlugin/arucobridge.cpp`. Run `NativePlugin/build.bat`. It uses the NDK that comes with Unity and the C++ headers from the [OpenCV 5 Android SDK](https://opencv.org/releases/) (by default it looks for `OpenCV-android-sdk` next to this folder, or set `OPENCV_SDK`).
+
 ## Troubleshooting
 
 | Problem | Fix |

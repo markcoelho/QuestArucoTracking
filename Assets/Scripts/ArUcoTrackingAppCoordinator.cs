@@ -48,7 +48,7 @@ namespace QuestArucoTracker
         private bool m_hideAssignedObjectRenderers = true;
         [SerializeField, Tooltip("Color of the marker square and ID number.")]
         private Color m_outlineColor = new Color(1f, 0.1f, 0.85f, 1f);
-        [SerializeField, Range(0f, 60f), Tooltip("Optional extra glide toward each new detection (1/s). 0 = place objects exactly at the tracked pose (lowest lag; smoothing is already done by the tracker). Around 30 hides the step between 30 Hz detections at the cost of ~30 ms lag.")]
+        [SerializeField, Range(0f, 60f), Tooltip("Optional extra glide toward the tracked pose (1/s). Keep 0: the tracker already smooths and predicts poses every frame, and any glide adds lag.")]
         private float m_followSpeed = 0f;
 
         private readonly Dictionary<int, MarkerEntry> m_markers = new Dictionary<int, MarkerEntry>();
@@ -97,6 +97,7 @@ namespace QuestArucoTracker
             m_arucoMarkerTracking.UpdateTracking(
                 cameraTexture,
                 m_passthroughCameraAccess.GetCameraPose(),
+                m_passthroughCameraAccess.Timestamp,
                 m_passthroughCameraAccess.IsUpdatedThisFrame);
 
             UpdateMarkerObjects();
